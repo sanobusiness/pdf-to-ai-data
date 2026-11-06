@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PDF to AI-Ready Data · Markdown, tables, RAG chunks and OCR from any PDF</title>
+<meta name="description" content="Turn PDFs into clean Markdown, tables as JSON/CSV and RAG-ready chunks with page numbers. Built-in OCR for scans. No AI APIs. $0.001 per page.">
+<link rel="canonical" href="https://sanobusiness.github.io/pdf-to-ai-data/">
+<link rel="icon" href="icon.png" type="image/png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sanobusiness.github.io/pdf-to-ai-data/">
+<meta property="og:title" content="PDF to AI-Ready Data">
+<meta property="og:description" content="Any PDF into Markdown, tables and RAG chunks with page numbers. OCR for scans. No AI APIs. $0.001 per page.">
+<meta property="og:image" content="https://sanobusiness.github.io/pdf-to-ai-data/hero.png">
+<meta property="og:image:width" content="1080">
+<meta property="og:image:height" content="1080">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: product landing page. Hero with the illustration, features, use cases, setup, pricing, FAQ, final CTA. */
+:root {
+  --bg: #f5f6fe; --surface: #ffffff; --ink: #141832; --muted: #5a6180; --line: #dfe2f5;
+  --accent: #4f46e5; --accent-ink: #ffffff; --deep: #312e81; --green: #10b981; --soft: #eceefd;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0e1024; --surface: #171a36; --ink: #e8eaff; --muted: #a3a8cc; --line: #2b2f5c;
+    --accent: #8b85ff; --accent-ink: #0e1024; --deep: #1c1a52; --soft: #1f2350; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--body); }
+img { max-width: 100%; display: block; }
+a { color: var(--accent); }
+code { font-family: var(--mono); font-size: .9em; background: var(--soft); padding: 1px 5px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; letter-spacing: -0.015em; }
+p { margin: 0; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.eyebrow { font-family: var(--mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+nav { padding-block: 18px; }
+nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; font-size: 18px; color: var(--ink); text-decoration: none; }
+.brand img { width: 34px; height: 34px; border-radius: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 600 16px var(--body); text-decoration: none; border-radius: 10px; padding: 13px 20px; background: var(--accent); color: var(--accent-ink); border: 2px solid var(--accent); }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn.small { padding: 8px 14px; font-size: 14px; }
+.btn:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+.hero { padding-block: 32px 56px; }
+.hero .wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.hero h1 { font-size: clamp(36px, 6vw, 58px); font-weight: 800; line-height: 1.03; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lede { font-size: 19px; color: var(--muted); margin-top: 18px; max-width: 36ch; }
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; align-items: center; }
+.cta small { color: var(--muted); font-size: 14px; flex-basis: 100%; }
+.visual { border-radius: 18px; overflow: hidden; box-shadow: 0 24px 60px -24px rgba(49, 46, 129, .55); aspect-ratio: 1 / 1; }
+section { padding-block: 52px; }
+section h2 { font-size: clamp(28px, 4vw, 38px); font-weight: 800; margin-top: 8px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+.grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 28px; }
+.feature { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+.feature h3 { font-size: 19px; margin-bottom: 6px; }
+.feature p { color: var(--muted); font-size: 15px; }
+.steps { counter-reset: step; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; position: relative; }
+.step::before { counter-increment: step; content: counter(step); display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 800 18px var(--display); margin-bottom: 12px; }
+.step h3 { font-size: 18px; margin-bottom: 4px; }
+.step p { color: var(--muted); font-size: 15px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.chip { font-family: var(--mono); font-size: 13px; background: var(--soft); border-radius: 6px; padding: 3px 9px; }
+.price { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+.price b { display: block; font-family: var(--display); font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.price span { color: var(--muted); font-size: 15px; }
+.note { color: var(--muted); margin-top: 16px; max-width: 70ch; }
+.faq { display: grid; gap: 10px; margin-top: 24px; max-width: 760px; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+summary { cursor: pointer; font-weight: 600; }
+details p { color: var(--muted); margin-top: 8px; }
+.final { background: linear-gradient(135deg, #2563eb, #7c3aed); color: #fff; border-radius: 20px; padding: 44px 32px; display: grid; gap: 16px; justify-items: start; }
+.final h2 { color: #fff; }
+.final p { color: #e0e7ff; max-width: 56ch; }
+.final .btn { background: var(--green); border-color: var(--green); color: #052e22; }
+footer { padding-block: 32px 48px; color: var(--muted); font-size: 14px; }
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: 1fr; gap: 32px; }
+  .grid3, .grid2, .steps { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .btn:hover { filter: none; } }
+</style>
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="icon.png" alt="" width="34" height="34">PDF to AI-Ready Data</a>
+    <a class="btn small" href="https://apify.com/loris-barce/pdf-to-ai-data">Try it free</a>
+  </div>
+</nav>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">An Apify Actor</span>
+        <h1>Turn any PDF into data <em>your AI can use.</em></h1>
+        <p class="lede">Clean Markdown, tables as JSON/CSV and RAG-ready chunks with page numbers. Built-in OCR for scanned PDFs. No AI APIs: your documents stay inside the Actor.</p>
+        <div class="cta">
+          <a class="btn" href="https://apify.com/loris-barce/pdf-to-ai-data">Try it on Apify →</a>
+          <a class="btn ghost" href="#how">How it works</a>
+          <small>Pay per page · works on Apify's free plan</small>
+        </div>
+      </div>
+      <img class="visual" src="hero.png" alt="A PDF page turned into three outputs: Markdown with headings, a table as JSON/CSV, and RAG chunks tagged with page numbers" width="1080" height="1080">
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">What you get</span>
+      <h2>Better input, better answers</h2>
+      <div class="grid3">
+        <div class="feature"><h3>Structure preserved</h3><p>Headings rebuilt from font sizes, bulleted and numbered lists, clean paragraphs.</p></div>
+        <div class="feature"><h3>Noise removed</h3><p>Running headers, footers and page numbers are stripped; words split across lines are joined again.</p></div>
+        <div class="feature"><h3>Tables extracted</h3><p>Gridded tables and the rule-only tables of financial reports become JSON and CSV, and GitHub tables in the Markdown.</p></div>
+        <div class="feature"><h3>Chunks for embeddings</h3><p>Split on paragraph and sentence boundaries, with size and overlap you choose. Each chunk keeps <code>pageStart</code>, <code>pageEnd</code> and source.</p></div>
+        <div class="feature"><h3>OCR for scans</h3><p>Pages without text are read automatically at 300 DPI, in English, Italian, German, French and Spanish.</p></div>
+        <div class="feature"><h3>Robust batches</h3><p>One broken PDF never stops the batch, and every failure comes with a clear reason. Memory stays flat on 300+ page documents.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Use cases</span>
+      <h2>Made for documents people ask questions about</h2>
+      <div class="grid2">
+        <div class="feature"><h3>RAG chatbots and AI agents</h3><p>Manuals, policies, contracts and knowledge bases, with answers that cite the exact pages.</p></div>
+        <div class="feature"><h3>Tables from reports and invoices</h3><p>Financial statements, price lists and invoices straight to CSV or JSON.</p></div>
+        <div class="feature"><h3>Scanned archives</h3><p>Make old scanned PDFs searchable and ready for embeddings.</p></div>
+        <div class="feature"><h3>LLM pipelines</h3><p>Feed Markdown instead of raw PDF text: better answers, fewer tokens.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <span class="eyebrow">How it works</span>
+      <h2>Three steps, no code</h2>
+      <div class="steps">
+        <div class="step"><h3>Add your PDFs</h3><p>Paste links to PDF files, or upload files that aren't public.</p></div>
+        <div class="step"><h3>Pick the outputs</h3><p>Markdown, plain text, tables, chunks: any combination. OCR turns on by itself for scanned pages.</p></div>
+        <div class="step"><h3>Use the results</h3><p>Download them, or send the chunks to your vector database with Apify's integrations.</p></div>
+      </div>
+      <div class="chips"><span class="chip">Pinecone</span><span class="chip">Qdrant</span><span class="chip">Weaviate</span><span class="chip">Milvus</span><span class="chip">Chroma</span><span class="chip">LangChain</span><span class="chip">LlamaIndex</span><span class="chip">n8n</span><span class="chip">Make</span><span class="chip">Zapier</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Pricing</span>
+      <h2>Pay only for what's processed</h2>
+      <div class="grid3">
+        <div class="price"><b>$0.001</b><span>per page with a text layer</span></div>
+        <div class="price"><b>$0.005</b><span>per page that needs OCR</span></div>
+        <div class="price"><b>$0.002</b><span>per table, only when you ask for tables</span></div>
+      </div>
+      <p class="note">A 20-page text report with 3 tables costs $0.026. Failed downloads, non-PDF files and password-protected files are never charged. Set a spending limit and the run stops cleanly, keeping what was already processed.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Questions</span>
+      <h2>FAQ</h2>
+      <div class="faq">
+        <details><summary>Are my documents sent to OpenAI or another AI service?</summary><p>No. Extraction and OCR run entirely inside the Actor.</p></details>
+        <details><summary>Can I process files that aren't public?</summary><p>Yes. Upload them in the input form (or to an Apify key-value store) and they're processed like links.</p></details>
+        <details><summary>Does it open password-protected PDFs?</summary><p>No. They're reported as "password protected" and not charged. The Actor never tries to unlock them.</p></details>
+        <details><summary>How good is the OCR?</summary><p>It depends on the scan: resolution, skew and contrast matter. Printed text works well; handwriting isn't supported.</p></details>
+        <details><summary>Which tables are detected?</summary><p>Tables with a full grid, or with horizontal lines above and below. Tables made only of aligned text with no lines stay as text.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="final">
+        <h2>Stop copy-pasting from PDFs.</h2>
+        <p>Open the Actor on the Apify Store, paste a PDF link and see the Markdown, tables and chunks in seconds.</p>
+        <a class="btn" href="https://apify.com/loris-barce/pdf-to-ai-data">Open on Apify Store →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">PDF to AI-Ready Data by Loris Barce · runs on <a href="https://apify.com/loris-barce/pdf-to-ai-data">Apify</a>.</div>
+</footer>
+</body>
+</html>
