@@ -52,13 +52,13 @@ nav .wrap { display: flex; align-items: center; justify-content: space-between; 
 .btn.small { padding: 8px 14px; font-size: 14px; }
 .btn:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
 .hero { padding-block: 32px 56px; }
-.hero .wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; }
 .hero h1 { font-size: clamp(36px, 6vw, 58px); font-weight: 800; line-height: 1.03; }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .hero .lede { font-size: 19px; color: var(--muted); margin-top: 18px; max-width: 36ch; }
 .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; align-items: center; }
 .cta small { color: var(--muted); font-size: 14px; flex-basis: 100%; }
-.visual { border-radius: 18px; overflow: hidden; box-shadow: 0 24px 60px -24px rgba(49, 46, 129, .55); aspect-ratio: 1 / 1; }
+.visual { display: block; width: 100%; height: auto; max-width: 560px; justify-self: end; border-radius: 22px; box-shadow: 0 30px 70px -28px rgba(15, 23, 42, .55), 0 0 0 1px rgba(255, 255, 255, .06); }
 section { padding-block: 52px; }
 section h2 { font-size: clamp(28px, 4vw, 38px); font-weight: 800; margin-top: 8px; }
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 28px; }
@@ -88,6 +88,7 @@ details p { color: var(--muted); margin-top: 8px; }
 footer { padding-block: 32px 48px; color: var(--muted); font-size: 14px; }
 @media (max-width: 860px) {
   .hero .wrap { grid-template-columns: 1fr; gap: 32px; }
+  .visual { justify-self: center; }
   .grid3, .grid2, .steps { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .btn:hover { filter: none; } }
@@ -114,7 +115,7 @@ footer { padding-block: 32px 48px; color: var(--muted); font-size: 14px; }
           <small>Pay per page · works on Apify's free plan</small>
         </div>
       </div>
-      <img class="visual" src="hero.png" alt="A PDF page turned into three outputs: Markdown with headings, a table as JSON/CSV, and RAG chunks tagged with page numbers" width="1080" height="1080">
+      <img class="visual" src="hero-visual.png" alt="A PDF page turned into three outputs: Markdown with headings, a table as JSON/CSV, and RAG chunks tagged with page numbers" width="1080" height="875">
     </div>
   </div>
 
